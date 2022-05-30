@@ -151,6 +151,11 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         juce::ignoreUnused (channelData);
         // ..do something to the data...
     }
+
+    ratio_finder.getRatio(); //add arguments
+    framer.createFrames(/*add arguments*/);
+    pitch_shifter.execute(/*add arguments*/);
+    framer.fusionFrames(/*add arguments*/);
 }
 
 //==============================================================================

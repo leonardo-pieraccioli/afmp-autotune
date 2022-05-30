@@ -72,7 +72,11 @@ juce_add_plugin(Autotune
 target_sources(Autotune
     PRIVATE
         Source/PluginEditor.cpp
-        Source/PluginProcessor.cpp)
+        Source/PluginProcessor.cpp
+        Source/Classes/Framer.cpp
+        Source/Classes/PitchShifter.cpp
+        Source/Classes/RatioFinder.cpp
+        )
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
 # project, these might be passed in the 'Preprocessor Definitions' field. JUCE modules also make use

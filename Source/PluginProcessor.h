@@ -1,5 +1,10 @@
 #pragma once
 
+//Including autotune classes
+#include "Classes/Framer.hpp"
+#include "Classes/RatioFinder.hpp"
+#include "Classes/PitchShifter.hpp"
+
 #include <juce_audio_processors/juce_audio_processors.h>
 
 //==============================================================================
@@ -45,4 +50,8 @@ public:
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessor)
+
+    Framer framer{};
+    PitchShifter pitch_shifter{};
+    RatioFinder ratio_finder{};
 };

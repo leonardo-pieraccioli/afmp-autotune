@@ -6,6 +6,7 @@
 #include "Classes/PitchShifter.hpp"
 
 #include <juce_audio_processors/juce_audio_processors.h>
+#include <juce_dsp/juce_dsp.h>
 
 //==============================================================================
 class AudioPluginAudioProcessor  : public juce::AudioProcessor

@@ -153,8 +153,7 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     }
 
     //i'm taking the samples value from the channel 0 of the buffer, but i really don't know what this means
-    float ratio = ratio_finder.getRatio( buffer.getReadPointer(0) ); 
-    
+    ratio_finder.getRatio(/*add arguments*/); 
     framer.createFrames(/*add arguments*/);
     pitch_shifter.execute(/*add arguments*/);
     framer.fusionFrames(/*add arguments*/);

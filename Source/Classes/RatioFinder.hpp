@@ -14,7 +14,7 @@ class RatioFinder {
         //public variables
 
         //public methods
-        float getRatio(const float* buffer_channel_pointer);
+        void getRatio();
 };
 
 #endif //RATIO_FINDER_H

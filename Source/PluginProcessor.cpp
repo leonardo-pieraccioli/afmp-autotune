@@ -89,6 +89,9 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
+
+    //RatioFinder initialization
+    ratio_finder.createFreqTable();
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -152,7 +155,14 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         // ..do something to the data...
     }*/
 
-    ratio_finder.getRatio(buffer); 
+    /**
+     * @brief DA RIMUOVERE PRIMA DEL MERGE
+     * Codice di testing che usa il buffer di input come vettore di float
+     */
+    auto input1 = buffer.getReadPointer(0);
+    auto inputSamples = std::vector<float>(input1, input1 + buffer.getNumSamples());
+
+    ratio_finder.getRatio(inputSamples, getSampleRate()); 
     framer.createFrames(/*add arguments*/);
     pitch_shifter.execute(/*add arguments*/);
     framer.fusionFrames(/*add arguments*/);

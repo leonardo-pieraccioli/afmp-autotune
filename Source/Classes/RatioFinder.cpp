@@ -5,7 +5,6 @@
 RatioFinder::RatioFinder(){}
 
 //implementation of functions in autotune.m
-void RatioFinder::getRatio(){
-
+void RatioFinder::getRatio(juce::AudioBuffer<float> inputTime){
     
 }

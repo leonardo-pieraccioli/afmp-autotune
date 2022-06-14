@@ -2,14 +2,14 @@
 //constructor
 CircularBuffer::CircularBuffer(int s){
     size = s;
-    end_i = size;
+    end_i = size-1;
     window = std::vector<float>(size,0.0);
 }
 
 //overload operator []
 float &CircularBuffer::operator[](int i){
-    int a = i/size;  //ratio rounded in case i is few times higher than size
     int j = i + start_read_i; //set index 0 to start_read_i
+    int a = j/size;  //ratio rounded in case i is few times higher than size
     if( j < 0){
         if( j <= -size){
             return window [j + size*(a+1)];
@@ -50,15 +50,17 @@ std::vector<float> CircularBuffer::buffer_read_and_write(const std::vector<float
     if(temp >= size) {
         start_read_i = temp - size;
     } else start_read_i = temp;
+
+    return bufferOUT;
 }
 
 
 //sending window to elaborare
 std::vector<float> CircularBuffer::get_window_to_elaborate(){
-    std::vector<float> temp_window;
-    
-    for (int i = end_i + 1; i< start_read_i; i++){
-        temp_window.push_back((*this)[i]);
+    int a = size+start_read_i-end_i-1;
+    std::vector<float> temp_window(a,0);
+    for (int i = 1; i<=a; i++){
+        temp_window[a-i] = (*this)[-i];
     }
 
     return temp_window; 
@@ -66,9 +68,10 @@ std::vector<float> CircularBuffer::get_window_to_elaborate(){
 
 //receiving elaborated window
 void CircularBuffer::set_window_once_elaborate(const std::vector<float>& w){
+    int a = size+start_read_i-end_i-1;
     
-    for (int i = end_i + 1, j=0; i< start_read_i, j<w.size(); i++, j++){
-        (*this)[i]=w[j];
+    for (int i = 1; i<=a; i++){
+        (*this)[-i] = w[a-i];
     }
 
     end_i = start_read_i-1;

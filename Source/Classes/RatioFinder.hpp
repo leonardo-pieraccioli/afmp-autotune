@@ -19,6 +19,7 @@ class RatioFinder {
         float findNearestNoteFrequency(float noteFrequency);
 
     public:
+        RatioFinder();
         //GETTERS AND SETTERS
         //I added setters in case we want to make the user choose parameters from the GUI
         void setStartFrequency(float freq);
@@ -31,7 +32,7 @@ class RatioFinder {
         //------------PUBLIC VARIABLES------------
 
         //------------PUBLIC METHODS------------
-        void getRatio(std::vector<float> input, double sampleRate);
+        float getRatio(std::vector<float> input, double sampleRate);
         void createFreqTable();
         
 };

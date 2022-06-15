@@ -52,7 +52,7 @@ private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessor)
 
-    Framer framer{};
-    PitchShifter pitch_shifter{};
-    RatioFinder ratio_finder{};
+    Framer framer;
+    PitchShifter pitch_shifter;
+    RatioFinder ratio_finder;
 };

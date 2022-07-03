@@ -152,11 +152,28 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         // ..do something to the data...
     }*/
 
-    //i'm taking the samples value from the channel 0 of the buffer, but i really don't know what this means
-    ratio_finder.getRatio(/*add arguments*/); 
-    framer.createFrames(/*add arguments*/);
-    pitch_shifter.execute(/*add arguments*/);
-    framer.fusionFrames(/*add arguments*/);
+    if(window.will_be_full(buffer.getNumSamples())){ //control if the window is full enough to be elaborated
+        
+        std::vector<float> win = window.get_window_to_elaborate(); //get the window
+
+        ratio_finder.getRatio(/*add arguments*/); 
+        framer.createFrames(/*add arguments*/);
+        pitch_shifter.execute(/*add arguments*/);
+        framer.fusionFrames(/*add arguments*/);
+
+        window.set_window_once_elaborate(win); //set the window
+    }
+
+    // //read and write function with respective casting and pointers management
+    // {
+    //     std::vector<float> bufferIN, bufferOUT;
+
+    //     bufferIN = buffer.getReadPointer(0);
+    //     bufferOUT = buffer.getWritePointer(0);
+
+    //     bufferOUT = window.buffer_read_and_write(bufferIN); 
+    // }
+
 }
 
 //==============================================================================

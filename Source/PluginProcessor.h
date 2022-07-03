@@ -4,6 +4,7 @@
 #include "Classes/Framer.hpp"
 #include "Classes/RatioFinder.hpp"
 #include "Classes/PitchShifter.hpp"
+#include "Classes/CircularBuffer.hpp"
 
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_dsp/juce_dsp.h>
@@ -52,7 +53,9 @@ private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessor)
 
+    CircularBuffer window{};
     Framer framer{};
     PitchShifter pitch_shifter{};
     RatioFinder ratio_finder{};
+    
 };

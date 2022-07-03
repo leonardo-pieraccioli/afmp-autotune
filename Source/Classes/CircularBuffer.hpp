@@ -7,12 +7,13 @@
 class CircularBuffer {
     private:
     int size = 0; 
-    int start_read_i = 0;
+    int start_i = 0;
     int end_i = 0; //end of the array, end_i+1 is the start of the computed part
 
     public:
     std::vector<float> window;
     //constructor
+    CircularBuffer();
     CircularBuffer(int s);
     //overload operator
     float &operator[](int i);

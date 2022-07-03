@@ -6,9 +6,9 @@ CircularBuffer::CircularBuffer(int s){
     window = std::vector<float>(size,0.0);
 }
 
-//overload operator []
+//overload operator [] for the class, it modify the window variable
 float &CircularBuffer::operator[](int i){
-    int j = i + start_read_i; //set index 0 to start_read_i
+    int j = i + start_i; //start_i is used as the first index in the circular buffer
     int a = j/size;  //ratio rounded in case i is few times higher than size
     if( j < 0){
         if( j <= -size){
@@ -24,7 +24,7 @@ float &CircularBuffer::operator[](int i){
 
 //flag
 bool CircularBuffer::will_be_full(const int& buffer_size){
-    if(start_read_i + buffer_size > end_i){
+    if(start_i + buffer_size > end_i){
         return true;
     }
     return false;
@@ -46,10 +46,10 @@ std::vector<float> CircularBuffer::buffer_read_and_write(const std::vector<float
     }
 
     //resetting start index, if it surpass the size of the vector i subtract the size form it to keep it from going up to infinity
-    int temp = start_read_i + buffer_size;
+    int temp = start_i + buffer_size;
     if(temp >= size) {
-        start_read_i = temp - size;
-    } else start_read_i = temp;
+        start_i = temp - size;
+    } else start_i = temp;
 
     return bufferOUT;
 }
@@ -57,7 +57,7 @@ std::vector<float> CircularBuffer::buffer_read_and_write(const std::vector<float
 
 //sending window to elaborare
 std::vector<float> CircularBuffer::get_window_to_elaborate(){
-    int a = size+start_read_i-end_i-1;
+    int a = size+start_i-end_i-1;
     std::vector<float> temp_window(a,0);
     for (int i = 1; i<=a; i++){
         temp_window[a-i] = (*this)[-i];
@@ -68,11 +68,11 @@ std::vector<float> CircularBuffer::get_window_to_elaborate(){
 
 //receiving elaborated window
 void CircularBuffer::set_window_once_elaborate(const std::vector<float>& w){
-    int a = size+start_read_i-end_i-1;
+    int a = size+start_i-end_i-1;
     
     for (int i = 1; i<=a; i++){
         (*this)[-i] = w[a-i];
     }
 
-    end_i = start_read_i-1;
+    end_i = start_i-1;
 }

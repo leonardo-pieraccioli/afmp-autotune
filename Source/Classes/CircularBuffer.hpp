@@ -13,7 +13,7 @@ class CircularBuffer {
     public:
     std::vector<float> window;
     //constructor
-    CircularBuffer();
+    CircularBuffer(){};
     CircularBuffer(int s);
     //overload operator
     float &operator[](int i);

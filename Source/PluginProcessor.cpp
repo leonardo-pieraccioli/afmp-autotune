@@ -89,6 +89,9 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
+
+    window = CircularBuffer(samplesPerBlock*10); //I'm not sure this is the intend way but should work
+
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -163,16 +166,6 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 
         window.set_window_once_elaborate(win); //set the window
     }
-
-    // //read and write function with respective casting and pointers management
-    // {
-    //     std::vector<float> bufferIN, bufferOUT;
-
-    //     bufferIN = buffer.getReadPointer(0);
-    //     bufferOUT = buffer.getWritePointer(0);
-
-    //     bufferOUT = window.buffer_read_and_write(bufferIN); 
-    // }
 
 }
 

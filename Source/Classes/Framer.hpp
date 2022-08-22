@@ -1,9 +1,11 @@
 #ifndef FRAMER_H
 #define FRAMER_H
 
+#include <vector>
+#include <math.h>
 class Framer {
     private:
-        //pricate variables
+        //private variables
 
         //private methods
 
@@ -12,9 +14,10 @@ class Framer {
         Framer();
         
         //public variables
-
+        std::vector<std::vector<float>> Frames;
+        
         //methods
-        void createFrames(/*add arguments*/);
+        void createFrames(std::vector<float> window);
         void fusionFrames(/*add arguments*/);
 };
 

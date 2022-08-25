@@ -156,10 +156,10 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
      * @brief DA RIMUOVERE PRIMA DEL MERGE
      * Codice di testing che usa il buffer di input come vettore di float
      */
-    auto input1 = buffer.getReadPointer(0);
-    auto inputSamples = std::vector<float>(input1, input1 + buffer.getNumSamples());
+    auto input = buffer.getReadPointer(0);
+    auto inputSamples = std::vector<float>(input, input + buffer.getNumSamples());
 
-    ratio_finder.getRatio(inputSamples, getSampleRate()); 
+    ratio_finder.getRatio(inputSamples, getSampleRate());
     framer.createFrames(/*add arguments*/);
     pitch_shifter.execute(/*add arguments*/);
     framer.fusionFrames(/*add arguments*/);

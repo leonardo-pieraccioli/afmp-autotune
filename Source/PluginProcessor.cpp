@@ -89,6 +89,9 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
+
+    window = CircularBuffer(samplesPerBlock*10); //I'm not sure this is the intend way but should work
+
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -152,17 +155,17 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         // ..do something to the data...
     }*/
 
-    /**
-     * @brief DA RIMUOVERE PRIMA DEL MERGE
-     * Codice di testing che usa il buffer di input come vettore di float
-     */
-    auto input = buffer.getReadPointer(0);
-    auto inputSamples = std::vector<float>(input, input + buffer.getNumSamples());
+    if(window.will_be_full(buffer.getNumSamples())){ //control if the window is full enough to be elaborated
+        
+        std::vector<float> win = window.get_window_to_elaborate(); //get the window
 
-    ratio_finder.getRatio(inputSamples, getSampleRate());
-    framer.createFrames(/*add arguments*/);
-    pitch_shifter.execute(/*add arguments*/);
-    framer.fusionFrames(/*add arguments*/);
+        auto ratio = ratio_finder.getRatio(inputSamples, getSamplesRate()); 
+        framer.createFrames(/*add arguments*/);
+        pitch_shifter.execute(/*add arguments*/);
+        framer.fusionFrames(/*add arguments*/);
+
+        window.set_window_once_elaborate(win); //set the window
+    }
 }
 
 //==============================================================================

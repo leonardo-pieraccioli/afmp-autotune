@@ -57,5 +57,4 @@ private:
     Framer framer{};
     PitchShifter pitch_shifter{};
     RatioFinder ratio_finder{};
-    
 };

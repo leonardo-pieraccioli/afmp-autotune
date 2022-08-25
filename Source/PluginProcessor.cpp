@@ -137,7 +137,7 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
     // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
+    // when they first compile a plbufferugin, but obviously you don't need to keep
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
@@ -159,14 +159,13 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         
         std::vector<float> win = window.get_window_to_elaborate(); //get the window
 
-        ratio_finder.getRatio(/*add arguments*/); 
+        auto ratio = ratio_finder.getRatio(inputSamples, getSamplesRate()); 
         framer.createFrames(/*add arguments*/);
         pitch_shifter.execute(/*add arguments*/);
         framer.fusionFrames(/*add arguments*/);
 
         window.set_window_once_elaborate(win); //set the window
     }
-
 }
 
 //==============================================================================

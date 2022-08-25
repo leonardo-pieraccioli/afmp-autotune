@@ -159,7 +159,7 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         
         std::vector<float> win = window.get_window_to_elaborate(); //get the window
 
-        auto ratio = ratio_finder.getRatio(inputSamples, getSamplesRate()); 
+        auto ratio = ratio_finder.getRatio(win, getSampleRate());
         framer.createFrames(/*add arguments*/);
         pitch_shifter.execute(/*add arguments*/);
         framer.fusionFrames(/*add arguments*/);

@@ -155,14 +155,20 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         // ..do something to the data...
     }*/
 
+// check consistency of the variables names
+
     if(window.will_be_full(buffer.getNumSamples())){ //control if the window is full enough to be elaborated
         
         std::vector<float> win = window.get_window_to_elaborate(); //get the window
 
         auto ratio = ratio_finder.getRatio(win, getSampleRate());
-        framer.createFrames(/*add arguments*/);
+        
+        framer.createFrames(win);
+        
         pitch_shifter.execute(/*add arguments*/);
-        framer.fusionFrames(/*add arguments*/);
+        
+        
+        framer.fusionFrames(hopOut);
 
         window.set_window_once_elaborate(win); //set the window
     }

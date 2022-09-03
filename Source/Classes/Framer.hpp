@@ -8,19 +8,26 @@ class Framer {
         //private variables
         int len;
         int hopsize;
+        int newLen;
+        int winSize;
+        std::vector<std::vector<float>> Frames;
+        std::vector<float> vectorOutput;
+        
         //private methods
+    
 
     public: 
         //constructor
         Framer();
         
         //public variables
-        std::vector<std::vector<float>> Frames;
-        std::vector<float> vectorOutput;
         
         //methods
+        void setFrames(std::vector<std::vector<float>> framesMatrix);
+        std::vector<std::vector<float>> getFrames();
+        std::vector<float> getVectorOutput();
         void createFrames(std::vector<float> window);
-        void fusionFrames(std::vector<std::vector<float>> Frames);
+        void fusionFrames(int hopOut);
 };
 
 #endif //FRAMER_H

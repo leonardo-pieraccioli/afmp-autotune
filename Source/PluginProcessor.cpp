@@ -151,12 +151,13 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         juce::ignoreUnused (channelData);
         // ..do something to the data...
     }*/
-
+    std::vector<float> window;
+    int hopOut;
     //i'm taking the samples value from the channel 0 of the buffer, but i really don't know what this means
     ratio_finder.getRatio(/*add arguments*/); 
-    framer.createFrames(/*add arguments*/);
+    framer.createFrames(window);
     pitch_shifter.execute(/*add arguments*/);
-    framer.fusionFrames(/*add arguments*/);
+    framer.fusionFrames(hopOut);
 }
 
 //==============================================================================

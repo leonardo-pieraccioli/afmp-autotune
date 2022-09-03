@@ -89,6 +89,9 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
+
+    window = CircularBuffer(samplesPerBlock*10); //I'm not sure this is the intend way but should work
+
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -134,7 +137,7 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
     // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
+    // when they first compile a plbufferugin, but obviously you don't need to keep
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
@@ -151,13 +154,24 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         juce::ignoreUnused (channelData);
         // ..do something to the data...
     }*/
-    std::vector<float> window;
-    int hopOut;
-    //i'm taking the samples value from the channel 0 of the buffer, but i really don't know what this means
-    ratio_finder.getRatio(/*add arguments*/); 
-    framer.createFrames(window);
-    pitch_shifter.execute(/*add arguments*/);
-    framer.fusionFrames(hopOut);
+
+// check consistency of the variables names
+
+    if(window.will_be_full(buffer.getNumSamples())){ //control if the window is full enough to be elaborated
+        
+        std::vector<float> win = window.get_window_to_elaborate(); //get the window
+
+        auto ratio = ratio_finder.getRatio(win, getSampleRate());
+        
+        framer.createFrames(win);
+        
+        pitch_shifter.execute(/*add arguments*/);
+        
+        
+        framer.fusionFrames(hopOut);
+
+        window.set_window_once_elaborate(win); //set the window
+    }
 }
 
 //==============================================================================

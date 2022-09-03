@@ -76,6 +76,7 @@ target_sources(Autotune
         Source/Classes/Framer.cpp
         Source/Classes/PitchShifter.cpp
         Source/Classes/RatioFinder.cpp
+        Source/Classes/CircularBuffer.cpp
         )
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer

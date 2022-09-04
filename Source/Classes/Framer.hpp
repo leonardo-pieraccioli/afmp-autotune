@@ -11,7 +11,7 @@ class Framer {
         int newLen;
         int winSize;
         std::vector<std::vector<float>> Frames;
-        std::vector<float> vectorOutput;
+        std::vector<float> vectorOutput = std::vector<float>();
         
         //private methods
     
@@ -28,6 +28,9 @@ class Framer {
         std::vector<float> getVectorOutput();
         void createFrames(std::vector<float> window);
         void fusionFrames(int hopOut);
+
+        int getWinSize() const;
+        int getHopsize() const;
 };
 
 #endif //FRAMER_H

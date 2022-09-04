@@ -91,7 +91,6 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     juce::ignoreUnused (sampleRate, samplesPerBlock);
 
     window = CircularBuffer(samplesPerBlock*10); //I'm not sure this is the intend way but should work
-
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -133,16 +132,16 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
+    /* In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
     // This is here to avoid people getting screaming feedback
     // when they first compile a plbufferugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
+    // this code if your algorithm always overwrites all the output channels.*/
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
+    /* This is the place where you'd normally do the guts of your plugin's
     // audio processing...
     // Make sure to reset the state if your inner loop is processing
     // the samples and the outer loop is handling the channels.
@@ -155,23 +154,28 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         // ..do something to the data...
     }*/
 
-// check consistency of the variables names
-
     if(window.will_be_full(buffer.getNumSamples())){ //control if the window is full enough to be elaborated
-        
+        std::cout << "Elaborating" << std::endl;
         std::vector<float> win = window.get_window_to_elaborate(); //get the window
+        std::cout << "Window gotten with size " << win.size() << std::endl;
 
         auto ratio = ratio_finder.getRatio(win, getSampleRate());
-        
-        framer.createFrames(win);
-        
-        pitch_shifter.execute(/*add arguments*/);
-        
-        
-        framer.fusionFrames(hopOut);
+        std::cout << "Ratio: " << ratio << std::endl;
 
-        window.set_window_once_elaborate(win); //set the window
+        framer.createFrames(win);
+        framer.setFrames(pitch_shifter.execute(framer.getFrames(), framer.getWinSize(), framer.getHopsize(), ratio));
+        std::cout << "Pitch shifted" << std::endl;
+        framer.fusionFrames((int) round(ratio * (float) framer.getHopsize()));
+        std::cout << "Resampled" << std::endl;
+
+        window.set_window_once_elaborate(framer.getVectorOutput()); //set the window
     }
+    else
+        std::cout << "Not elaborated" << std::endl;
+
+    float* outBuffer = window.buffer_read_and_write(std::vector<float>(buffer.getReadPointer(0), buffer.getReadPointer(0) + buffer.getNumSamples())).data();
+    buffer.addFrom(0, 0, outBuffer, buffer.getNumSamples());
+    std::cout << "Buffer done" << std::endl;
 }
 
 //==============================================================================

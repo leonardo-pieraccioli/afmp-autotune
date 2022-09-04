@@ -29,7 +29,7 @@ class PitchShifter {
         //public variables
 
         //public methods
-        void execute(std::vector <std::vector<float>> outputy, const unsigned int& winSize, const unsigned int& hop, const float& ratio);
+        std::vector<std::vector<float>> execute(std::vector <std::vector<float>> outputy, const unsigned int& winSize, const unsigned int& hop, const float& ratio);
 };
 
 #endif //PITCH_SHIFTER_H

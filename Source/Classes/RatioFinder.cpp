@@ -33,6 +33,7 @@ std::vector<float> RatioFinder::getFreqTable() {
 /**
  * @brief Create a Frequency Table of the equal tempered scale between MIN e MAX FREQUENCY
  */
+
 RatioFinder::RatioFinder(){
     float fZero = (*this).getStartFrequency();
 
@@ -48,6 +49,7 @@ RatioFinder::RatioFinder(){
     for (auto n = nMin; n <= nMax; n+=1){
         freqTable[i++] = fZero * powf(2,(float) n/12);
     }
+    std::cout << "RatioFinder ready" << std::endl;
 }
 
 // A recursive binary search function
@@ -90,21 +92,27 @@ float RatioFinder::findNearestNoteFrequency(float noteFrequency){
  * @param inputTime Time samples vector
  * @param sampleRate Sample rate to read the vector
  */
-float RatioFinder::getRatio(std::vector<float> input, double sampleRate){
+float RatioFinder::getRatio(std::vector<float> freq, double sampleRate){
     //calculate the base 2 exponent of the inputTime size to initialize dsp::FFT object
-    int order = (int) floorf(log2f( (float) input.size())) + 1;
+    int order = (int) ceilf(log2f( (float) freq.size()));
 
     //initialize FFT object
     auto fft = juce::dsp::FFT(order);
+    //std::cout << "Fft created with order " << order << " with input size " << freq.size() << std::endl;
 
     //executing fft
-    auto freq = input;
-    freq.resize(freq.size()*2);
+    freq.resize(pow(2, order + 1));
+    //std::cout << "Resized at " << freq.size() << std::endl;
+
     fft.performFrequencyOnlyForwardTransform(freq.data());
+
+    //std::cout << "Fft performed" << std::endl;
 
     //min and max frequency set in .hpp
     int indexMinFrequency = (int) ceil( minFrequency * (float) freq.size()/sampleRate);
+    //std::cout << "Min freq " << indexMinFrequency << std::endl;
     int indexMaxFrequency = (int) floor(maxFrequency * (float) freq.size()/sampleRate);
+    //std::cout << "Max freq " << indexMaxFrequency << std::endl;
 
     //find fundamental
     int fundamentalFrequencyIndex = 0;
@@ -115,11 +123,15 @@ float RatioFinder::getRatio(std::vector<float> input, double sampleRate){
             fundamentalFrequencyIndex = i;
         }
     }
-
     float fundamentalFrequency = roundf(( (float) fundamentalFrequencyIndex - 1) * (float) sampleRate / (float) freq.size());
+    //std::cout << "Fun mag " << fundamentalFrequencyMagnitude << " Fun index " << fundamentalFrequencyIndex << " Fun freq " << fundamentalFrequency << std::endl;
 
     //find the nearest note
     float nearestNoteFrequency = findNearestNoteFrequency(fundamentalFrequency);
+    //std::cout << "Near freq " << nearestNoteFrequency << std::endl;
 
-    return nearestNoteFrequency/fundamentalFrequency;
+    if(fundamentalFrequency > 0)
+        return nearestNoteFrequency/fundamentalFrequency;
+
+    return 1;
 }

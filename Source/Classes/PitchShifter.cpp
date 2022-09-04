@@ -1,6 +1,7 @@
 //includes on top
 #include "PitchShifter.hpp"
 
+using namespace std;
 
 //constructor
 PitchShifter::PitchShifter(){
@@ -8,13 +9,15 @@ PitchShifter::PitchShifter(){
 }
 
 //implementation of functions in PitchShifter.h
-void PitchShifter::execute(std::vector <std::vector<float>> outputy,const unsigned int & winSize, const unsigned int& hop,const float & ratio){
-    //write code   
+std::vector<std::vector<float>> PitchShifter::execute(std::vector <std::vector<float>> outputy,const unsigned int & winSize, const unsigned int& hop,const float & ratio){
     float hopOut = round(hop * ratio); //computing the hop scaled by the ratio
-    std::vector <float> wn = hann(wn, winSize); //creating the Hanning window of winSize points
-    
+    auto wn = std::vector <float>(winSize);
+    wn = hann(wn, winSize); //creating the Hanning window of winSize points
+    cout << "Hann done" << endl;
+
     auto fft = juce::dsp::FFT (floor(log2(winSize))); //TODO attento all'ordine
-    
+    cout << "FFT created" << endl;
+
     //Vectors initializations
     phaseCumulative = std::vector<float>(winSize);
     phaseFrame = std::vector<float>(winSize);
@@ -22,9 +25,9 @@ void PitchShifter::execute(std::vector <std::vector<float>> outputy,const unsign
     previousPhase = 0.0;
     deltaPhi = std::vector<float>(winSize);
     trueFreq = std::vector<float>(winSize);
-
     
     for (int i = 0; i < numberFrames; ++i) {
+        cout << "Frame " << i << endl;
 
         //Analysis
         toComplex(outputy[i], currentFrame);
@@ -32,6 +35,7 @@ void PitchShifter::execute(std::vector <std::vector<float>> outputy,const unsign
             currentFrame[j] = currentFrame[j] * wn[j]; //applies the Hann window to the frame
             //FFT
             fft.perform(&currentFrame[j], &currentFrame[j], false); //ATTENTO CHE HAI MESSO INPUT E OUTPUT UGUALI 
+            cout << "FFT 1 done" << endl;
             //Gets the magnitude and the phase of the frame in elaboration
             magFrame[j] = std::abs(currentFrame[j]);
             phaseFrame[j] = std::arg(currentFrame[j]);
@@ -48,10 +52,14 @@ void PitchShifter::execute(std::vector <std::vector<float>> outputy,const unsign
             tempComplex = magFrame[j] * std::exp(tempComplex);
             //IFFT
             fft.perform(&currentFrame[j], &currentFrame[j], true); //ATTENTO CHE HAI MESSO INPUT E OUTPUT UGUALI
+            cout << "FFT 2 done" << endl;
             outputy[i][j] = real(currentFrame[j]);
             outputy[i][j] *= wn[j];
         }
     }
+
+    cout << "Ready to return" << endl;
+    return outputy;
 }
 
 //Hann function generator

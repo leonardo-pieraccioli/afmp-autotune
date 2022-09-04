@@ -12,7 +12,7 @@ class RatioFinder {
     private:
         //------------PRIVATE VARIABLES----------
         float maxFrequency = 10000;
-        float minFrequency = 60;
+        float minFrequency = 10;
         float startFrequency = 440;
         std::vector<float> freqTable;
 

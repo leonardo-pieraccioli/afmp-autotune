@@ -2,6 +2,8 @@
 #include "Framer.hpp"
 #include <juce_audio_basics/juce_audio_basics.h>
 
+using namespace std;
+
 //constructor
 Framer::Framer(){
     
@@ -22,50 +24,60 @@ std::vector<float> Framer::getVectorOutput(){
     return vectorOutput;
 }
 
+int Framer::getWinSize() const {
+    return winSize;
+}
+
+int Framer::getHopsize() const {
+    return hopsize;
+}
 
 //implementation of functions in Framer.h
 void Framer::createFrames(std::vector<float> window){
-    
+    std::cout << "Start create frames" << std::endl;
     len = window.size();
-    hopsize = len/64;
-    winSize = len/16;
+    hopsize = floor(len/64);
+    winSize = floor(len/16);
 
     // Find the max number of slices that can be obtained
     int numberSlices = floor((len-winSize)/hopsize);
-
     // Truncate if needed to get only a integer number of hop
-    int trunc = len*hopsize+winSize;
+    int trunc = numberSlices*hopsize+winSize;
+    std::cout << "trunc " << trunc << std::endl;
     window.resize(trunc);
-    
+    std::cout << "Window resized" << std::endl;
     // Frames matrix
     for ( int i = 0; i < numberSlices; i++) {
         int indexTimeStart = i*hopsize;
-        int indexTimeEnd = i*hopsize + len;
-        Frames[i].insert(Frames[i].begin(), window.begin()+indexTimeStart, window.begin()+indexTimeEnd);
+        int indexTimeEnd = i*hopsize + winSize;
+        Frames.push_back(std::vector<float>(window.begin()+indexTimeStart, window.begin()+indexTimeEnd));
+        //std::cout << "Frame " << i << "created " << std::endl;
     }
-
+    std::cout << "Matrix created" << std::endl;
 }
 
 void Framer::fusionFrames(int hopOut){
+    cout << "Fusion Frames started" << endl;
     int numberFrames = Frames.size();
-    int sizeFrames = winSize;
     int timeIndex = 0;
     double ratioSample;
-    std::vector<float> vectorStretch;
-
-    vectorStretch.assign(numberFrames*hopsize-hopsize+sizeFrames, 0);
+    auto vectorStretch = std::vector<float>(numberFrames*hopsize-hopsize+winSize, 0);
+    cout << "Vector Stretch size: " << vectorStretch.size() << endl;
 
     for ( int i = 0; i < numberFrames; i++) {
         for ( int j = 0; j < Frames[i].size(); j++) {
-        vectorStretch[j+timeIndex] += Frames[i][j];
+            vectorStretch[j+timeIndex] += Frames[i][j];
         }
         timeIndex += hopOut;
     }
+    cout << "Vector stretched ok" << endl;
     // interpolation
     juce::Interpolators::Linear interpol;
     newLen = vectorStretch.size();
-    ratioSample = newLen/sizeFrames;
-
-    interpol.process(ratioSample,vectorStretch.data(),vectorOutput.data(),sizeFrames);
-
+    cout << "resize from " << newLen << endl;
+    ratioSample = (double) newLen/ (double) len;
+    cout << "ratio sample is " << ratioSample << endl;
+    vectorOutput.resize(len);
+    interpol.process(ratioSample,vectorStretch.data(),vectorOutput.data(),len);
+    cout << "Interp ok" << endl;
 }

@@ -90,7 +90,8 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
 
-    window = CircularBuffer(samplesPerBlock*10); //I'm not sure this is the intend way but should work
+    //creating the window as a circular buffer long 10 times the buffer coming from JUCE
+    window = CircularBuffer(samplesPerBlock*10);
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -155,24 +156,33 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     }*/
 
     if(window.will_be_full(buffer.getNumSamples())){ //control if the window is full enough to be elaborated
+        //get the window
         std::cout << "Elaborating" << std::endl;
-        std::vector<float> win = window.get_window_to_elaborate(); //get the window
+        std::vector<float> win = window.get_window_to_elaborate();
         std::cout << "Window gotten with size " << win.size() << std::endl;
-
+        
+        //finding the ratio
         auto ratio = ratio_finder.getRatio(win, getSampleRate());
         std::cout << "Ratio: " << ratio << std::endl;
 
+        //splitting the window in frames
         framer.createFrames(win);
+
+        //pitch shifting
         framer.setFrames(pitch_shifter.execute(framer.getFrames(), framer.getWinSize(), framer.getHopsize(), ratio));
         std::cout << "Pitch shifted" << std::endl;
+
+        //recomposing the window
         framer.fusionFrames((int) round(ratio * (float) framer.getHopsize()));
         std::cout << "Resampled" << std::endl;
 
+        //set the window
         window.set_window_once_elaborate(framer.getVectorOutput()); //set the window
     }
     else
         std::cout << "Not elaborated" << std::endl;
-
+    
+    //saving the buffer from JUCE and sending an output
     float* outBuffer = window.buffer_read_and_write(std::vector<float>(buffer.getReadPointer(0), buffer.getReadPointer(0) + buffer.getNumSamples())).data();
     buffer.addFrom(0, 0, outBuffer, buffer.getNumSamples());
     std::cout << "Buffer done" << std::endl;

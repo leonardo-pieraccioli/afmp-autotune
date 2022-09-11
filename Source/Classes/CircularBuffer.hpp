@@ -6,22 +6,28 @@
 
 class CircularBuffer {
     private:
+    //variables
     int size = 0; 
     int start_i = 0;
     int end_i = 0; //end of the array, end_i+1 is the start of the computed part
+    //circular buffer window
     std::vector<float> window;
     
     public:
     //constructor
     CircularBuffer(){};
     CircularBuffer(int s);
+
     //overload operator
     float &operator[](int i);
+
     //flag
     bool will_be_full(const int& buffer_size);
+
     //elaboration
     std::vector<float> get_window_to_elaborate();
     void set_window_once_elaborate(const std::vector<float>& w);
+
     //inout
     std::vector<float> buffer_read_and_write( const std::vector<float>& bufferIN);
 };

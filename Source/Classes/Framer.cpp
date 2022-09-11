@@ -9,6 +9,7 @@ Framer::Framer(){
     
 }
 
+//frames matrix setter
 void Framer::setFrames(std::vector<std::vector<float>> framesMatrix){
     for(int i = 0; i < framesMatrix.size(); i++){
         for(int j = 0; j < framesMatrix[i].size(); j++){
@@ -16,37 +17,36 @@ void Framer::setFrames(std::vector<std::vector<float>> framesMatrix){
         }
     }
 }
+
+//getters
 std::vector<std::vector<float>> Framer::getFrames(){
     return Frames;
 }
-
 std::vector<float> Framer::getVectorOutput(){
     return vectorOutput;
 }
-
 int Framer::getWinSize() const {
     return winSize;
 }
-
 int Framer::getHopsize() const {
     return hopsize;
 }
 
-//implementation of functions in Framer.h
+//frames matrix creation
 void Framer::createFrames(std::vector<float> window){
     std::cout << "Start create frames" << std::endl;
     len = window.size();
     hopsize = floor(len/64);
     winSize = floor(len/16);
 
-    // Find the max number of slices that can be obtained
+    // find the max number of slices that can be obtained
     int numberSlices = floor((len-winSize)/hopsize);
-    // Truncate if needed to get only a integer number of hop
+    // truncate if needed to get only a integer number of hop
     int trunc = numberSlices*hopsize+winSize;
     std::cout << "trunc " << trunc << std::endl;
     window.resize(trunc);
     std::cout << "Window resized" << std::endl;
-    // Frames matrix
+    // frames matrix
     for ( int i = 0; i < numberSlices; i++) {
         int indexTimeStart = i*hopsize;
         int indexTimeEnd = i*hopsize + winSize;
@@ -56,6 +56,7 @@ void Framer::createFrames(std::vector<float> window){
     std::cout << "Matrix created" << std::endl;
 }
 
+//window reconstruction
 void Framer::fusionFrames(int hopOut){
     cout << "Fusion Frames started" << endl;
     int numberFrames = Frames.size();
@@ -71,6 +72,7 @@ void Framer::fusionFrames(int hopOut){
         timeIndex += hopOut;
     }
     cout << "Vector stretched ok" << endl;
+    
     // interpolation
     juce::Interpolators::Linear interpol;
     newLen = vectorStretch.size();

@@ -22,7 +22,7 @@ float &CircularBuffer::operator[](int i){
     return window[j];
 }
 
-//flag
+//flag function used as a condition for the elaboration part
 bool CircularBuffer::will_be_full(const int& buffer_size){
     if(start_i + buffer_size > end_i){
         return true;
@@ -30,7 +30,7 @@ bool CircularBuffer::will_be_full(const int& buffer_size){
     return false;
 }
 
-//read and write of the buffer
+//read and write of the buffer given by JUCE
 std::vector<float> CircularBuffer::buffer_read_and_write(const std::vector<float>& bufferIN){
     std::vector<float> bufferOUT;
     int buffer_size = bufferIN.size();
@@ -55,7 +55,7 @@ std::vector<float> CircularBuffer::buffer_read_and_write(const std::vector<float
 }
 
 
-//sending window to elaborare
+//sending window to elaborate 
 std::vector<float> CircularBuffer::get_window_to_elaborate(){
     int a = size+start_i-end_i-1;
     std::vector<float> temp_window(a,0);

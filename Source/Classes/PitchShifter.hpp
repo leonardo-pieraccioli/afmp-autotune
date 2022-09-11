@@ -18,7 +18,7 @@ class PitchShifter {
         std::vector<std::complex<float>> currentFrame;
         std::vector<float> deltaPhi;
         std::vector<float> trueFreq;
-        float previousPhase;
+        std::vector<float> previousPhase;
         //private methods
         std::vector<float> hann(std::vector<float> &inputVector, unsigned int n_points);
         void toComplex(const std::vector<float>& toConvert, std::vector<std::complex<float>> & converted);

@@ -1,4 +1,7 @@
 #include "CircularBuffer.hpp"
+
+#include <iostream>
+
 //constructor
 CircularBuffer::CircularBuffer(int s){
     size = s;
@@ -24,6 +27,7 @@ float &CircularBuffer::operator[](int i){
 
 //flag function used as a condition for the elaboration part
 bool CircularBuffer::will_be_full(const int& buffer_size){
+    std::cout << "Start: " << start_i << " End: " << end_i << std::endl;
     if (start_i < end_i) {
         if (start_i + buffer_size > end_i) {
             return true;
@@ -91,6 +95,8 @@ void CircularBuffer::set_window_once_elaborate(const std::vector<float>& w){
     for (int i = 1; i<=a; i++){
         (*this)[-i] = w[a-i];
     }
-
-    end_i = start_i-1;
+    if (start_i == 0)
+        end_i = size - 1;
+    else
+        end_i = start_i-1;
 }

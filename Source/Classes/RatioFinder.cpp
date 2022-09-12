@@ -130,8 +130,8 @@ float RatioFinder::getRatio(std::vector<float> freq, double sampleRate){
     float nearestNoteFrequency = findNearestNoteFrequency(fundamentalFrequency);
     //std::cout << "Near freq " << nearestNoteFrequency << std::endl;
 
-    if(fundamentalFrequency > 0)
+    if(fundamentalFrequency > 0 && nearestNoteFrequency != 0)
         return nearestNoteFrequency/fundamentalFrequency;
-
+    
     return 1;
 }

@@ -184,7 +184,7 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     
     //saving the buffer from JUCE and sending an output
     float* outBuffer = window.buffer_read_and_write(std::vector<float>(buffer.getReadPointer(0), buffer.getReadPointer(0) + buffer.getNumSamples())).data();
-    buffer.addFrom(0, 0, outBuffer, buffer.getNumSamples());
+    buffer.copyFrom(0, 0, outBuffer, buffer.getNumSamples());
     std::cout << "Buffer done" << std::endl;
 }
 

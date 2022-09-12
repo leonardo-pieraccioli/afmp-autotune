@@ -47,9 +47,9 @@ void Framer::createFrames(std::vector<float> window){
     window.resize(trunc);
     std::cout << "Window resized" << std::endl;
     // frames matrix
-    for ( int i = 0; i < numberSlices; i++) {
+    for ( int i = 0; i <= numberSlices; i++) {
         int indexTimeStart = i*hopsize;
-        int indexTimeEnd = i*hopsize + winSize;
+        int indexTimeEnd = i*hopsize + winSize - 1;
         Frames.push_back(std::vector<float>(window.begin()+indexTimeStart, window.begin()+indexTimeEnd));
         //std::cout << "Frame " << i << "created " << std::endl;
     }
@@ -62,7 +62,7 @@ void Framer::fusionFrames(int hopOut){
     int numberFrames = Frames.size();
     int timeIndex = 0;
     double ratioSample;
-    auto vectorStretch = std::vector<float>(numberFrames*hopsize-hopsize+winSize, 0);
+    auto vectorStretch = std::vector<float>(numberFrames*hopOut-hopOut+winSize, 0);
     cout << "Vector Stretch size: " << vectorStretch.size() << endl;
 
     for ( int i = 0; i < numberFrames; i++) {

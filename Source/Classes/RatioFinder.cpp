@@ -57,7 +57,7 @@ int binarySearch(float arr[], int l, int r, float x)
 {
     if (r >= l) {
         int mid = l + (r - l) / 2;
- 
+
         // If the frequency is present at the middle itself
         if (arr[mid] == x)
             return mid;
@@ -123,6 +123,8 @@ float RatioFinder::getRatio(std::vector<float> freq, double sampleRate){
             fundamentalFrequencyIndex = i;
         }
     }
+    if (fundamentalFrequencyIndex == 0)
+        return 1;
     float fundamentalFrequency = roundf(( (float) fundamentalFrequencyIndex - 1) * (float) sampleRate / (float) freq.size());
     //std::cout << "Fun mag " << fundamentalFrequencyMagnitude << " Fun index " << fundamentalFrequencyIndex << " Fun freq " << fundamentalFrequency << std::endl;
 

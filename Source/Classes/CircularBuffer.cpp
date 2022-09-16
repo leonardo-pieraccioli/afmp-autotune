@@ -27,7 +27,7 @@ float &CircularBuffer::operator[](int i){
 
 //flag function used as a condition for the elaboration part
 bool CircularBuffer::will_be_full(const int& buffer_size){
-    std::cout << "Start: " << start_i << " End: " << end_i << std::endl;
+    //std::cout << "Start: " << start_i << " End: " << end_i << std::endl;
     if (start_i < end_i) {
         if (start_i + buffer_size > end_i) {
             return true;

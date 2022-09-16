@@ -38,7 +38,6 @@ void Framer::createFrames(std::vector<float> window){
     len = window.size();
     hopsize = floor(len/64);
     winSize = floor(len/16);
-
     // find the max number of slices that can be obtained
     int numberSlices = floor((len-winSize)/hopsize);
     // truncate if needed to get only a integer number of hop
@@ -58,12 +57,12 @@ void Framer::createFrames(std::vector<float> window){
 
 //window reconstruction
 void Framer::fusionFrames(int hopOut){
-    cout << "Fusion Frames started" << endl;
+    cout << "Fusion Frames started with hop out: " << hopOut << " with hop: " << hopsize << endl;
     int numberFrames = Frames.size();
     int timeIndex = 0;
     double ratioSample;
     auto vectorStretch = std::vector<float>(numberFrames*hopOut-hopOut+winSize, 0);
-    cout << "Vector Stretch size: " << vectorStretch.size() << endl;
+    cout << "Vector Stretch size: " << vectorStretch.size() << " Window length: " << len << endl;
 
     for ( int i = 0; i < numberFrames; i++) {
         for ( int j = 0; j < Frames[i].size(); j++) {
@@ -71,15 +70,16 @@ void Framer::fusionFrames(int hopOut){
         }
         timeIndex += hopOut;
     }
-    cout << "Vector stretched ok" << endl;
+    //cout << "Vector stretched ok" << endl;
     
     // interpolation
     juce::Interpolators::Linear interpol;
     newLen = vectorStretch.size();
-    cout << "resize from " << newLen << endl;
     ratioSample = (double) newLen/ (double) len;
     cout << "ratio sample is " << ratioSample << endl;
     vectorOutput.resize(len);
     interpol.process(ratioSample,vectorStretch.data(),vectorOutput.data(),len);
-    cout << "Interp ok" << endl;
+    //cout << "Interp ok" << endl;
+
+    Frames.clear();
 }

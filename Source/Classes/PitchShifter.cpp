@@ -19,6 +19,7 @@ std::vector<std::vector<float>> PitchShifter::execute(std::vector <std::vector<f
     cout << "FFT created" << endl;
 
     //Vectors initializations
+    numberFrames = outputy.size();
     phaseCumulative = std::vector<float>(winSize);
     phaseFrame = std::vector<float>(winSize);
     magFrame = std::vector<float>(winSize);
@@ -28,17 +29,25 @@ std::vector<std::vector<float>> PitchShifter::execute(std::vector <std::vector<f
     auto currentFrameFFT = std::vector<std::complex<float>>();
 
     for (int i = 0; i < numberFrames; ++i) {
-        cout << "Frame " << i << endl;
+        //cout << "Frame " << i << endl;
 
         //Analysis
         toComplex(outputy[i], currentFrame);
-        fft.perform(currentFrame.data(), currentFrameFFT.data(), false);
-        cout << "FFT 1 done" << endl;
+        //cout << "Complexata" << endl;
+
         for (int j = 0; j < currentFrame.size(); ++j){
-            currentFrame[j] = currentFrame[j] * wn[j]; //applies the Hann window to the frame
+            currentFrame[j] *= wn[j]; //hanning window
+        }
+        //cout << "Window done" << endl;
+
+        currentFrameFFT.resize(currentFrame.size());
+        fft.perform(currentFrame.data(), currentFrameFFT.data(), false);
+        //cout << "FFT 1 done" << endl;
+
+        for (int j = 0; j < currentFrameFFT.size(); ++j){
             //Gets the magnitude and the phase of the frame in elaboration
-            magFrame[j] = std::abs(currentFrame[j]);
-            phaseFrame[j] = std::arg(currentFrame[j]);
+            magFrame[j] = std::abs(currentFrameFFT[j]);
+            phaseFrame[j] = std::arg(currentFrameFFT[j]);
 
         //Processing
             deltaPhi[j] = (phaseFrame[j] - previousPhase[j]) - (hop * 2 * M_PI * j / winSize); //lines 102 and 106 of Matlab pitchShift.m script
@@ -51,16 +60,17 @@ std::vector<std::vector<float>> PitchShifter::execute(std::vector <std::vector<f
             std::complex<float> tempComplex(0, phaseCumulative[j]);
             tempComplex = magFrame[j] * std::exp(tempComplex);
         }
+
         //IFFT
         fft.perform(currentFrameFFT.data(), currentFrame.data(), true);
-        cout << "FFT 2 done" << endl;
+        //cout << "FFT 2 done" << endl;
         for (int j = 0; j < currentFrame.size(); ++j) {
             outputy[i][j] = real(currentFrame[j]);
             outputy[i][j] *= wn[j];
         }
     }
 
-    cout << "Ready to return" << endl;
+    //cout << "Ready to return" << endl;
     return outputy;
 }
 

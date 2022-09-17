@@ -73,13 +73,14 @@ void Framer::fusionFrames(int hopOut){
     //cout << "Vector stretched ok" << endl;
     
     // interpolation
-    juce::Interpolators::Linear interpol;
+    juce::Interpolators::WindowedSinc interpol;
     newLen = vectorStretch.size();
     ratioSample = (double) newLen/ (double) len;
     cout << "ratio sample is " << ratioSample << endl;
     vectorOutput.resize(len);
+    interpol.reset();
     interpol.process(ratioSample,vectorStretch.data(),vectorOutput.data(),len);
-    //cout << "Interp ok" << endl;
+    cout << "Interp ok" << endl;
 
     Frames.clear();
 }

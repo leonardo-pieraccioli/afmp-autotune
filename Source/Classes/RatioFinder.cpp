@@ -70,10 +70,13 @@ int binarySearch(float arr[], int l, int r, float x)
         return binarySearch(arr, mid + 1, r, x);
     }
 
+    if(x / arr[r] > powf(2, arr[r]/(arr[l]*2)))
+        return l;
+    return r;
+    /*
     if(arr[l] - x > arr[r] - x)
         return r;
-    else
-        return l;
+    return l;*/
 }
 
 float RatioFinder::findNearestNoteFrequency(float noteFrequency){

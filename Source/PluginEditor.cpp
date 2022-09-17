@@ -23,7 +23,7 @@ void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
-    g.drawFittedText ("1.9.1",getLocalBounds(), juce::Justification::centred, 1);
+    g.drawFittedText ("2.0.0",getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void AudioPluginAudioProcessorEditor::resized()

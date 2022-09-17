@@ -90,8 +90,8 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
 
-    //creating the window as a circular buffer long 10 times the buffer coming from JUCE
-    window = CircularBuffer(samplesPerBlock*10);
+    //creating the window as a circular buffer long 20 times the buffer coming from JUCE
+    window = CircularBuffer(samplesPerBlock*20);
     std::cout << "Prepare to play" << std::endl;
 }
 

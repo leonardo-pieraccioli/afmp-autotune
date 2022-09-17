@@ -6,9 +6,9 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor()
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::mono(), true)
+                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
                       #endif
-                       .withOutput ("Output", juce::AudioChannelSet::mono(), true)
+                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
                        )
 {
@@ -188,6 +188,8 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     auto writePointer = buffer.getWritePointer(0);
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
         writePointer[sample] = outBuffer[sample];
+    //copy channel 0 in to channel 1 to obtain stereo audio behavior
+    buffer.copyFrom(1,0,buffer,0,0,buffer.getNumSamples());
     std::cout << "Buffer done" << std::endl;
 }
 

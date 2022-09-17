@@ -59,6 +59,8 @@ std::vector<std::vector<float>> PitchShifter::execute(std::vector <std::vector<f
         //Synthesis      
             std::complex<float> tempComplex(0, phaseCumulative[j]);
             tempComplex = magFrame[j] * std::exp(tempComplex);
+
+            currentFrameFFT[j]=tempComplex;
         }
 
         //IFFT

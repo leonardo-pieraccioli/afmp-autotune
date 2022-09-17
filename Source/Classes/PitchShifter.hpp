@@ -11,7 +11,6 @@
 class PitchShifter {
     private:
         //private variables
-        unsigned int numberFrames;
         std::vector<float> phaseCumulative;
         std::vector<float> phaseFrame;
         std::vector<float> magFrame;

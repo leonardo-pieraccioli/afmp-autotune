@@ -18,17 +18,19 @@ std::vector<std::vector<float>> PitchShifter::execute(std::vector <std::vector<f
     auto fft = juce::dsp::FFT (floor(log2(winSize))); //TODO attento all'ordine
     cout << "FFT created" << endl;
 
-    //Vectors initializations
-    numberFrames = outputy.size();
-    phaseCumulative = std::vector<float>(winSize);
-    phaseFrame = std::vector<float>(winSize);
-    magFrame = std::vector<float>(winSize);
-    previousPhase = std::vector<float>(winSize);
-    deltaPhi = std::vector<float>(winSize);
-    trueFreq = std::vector<float>(winSize);
-    auto currentFrameFFT = std::vector<std::complex<float>>();
+    //Vectors resizes
+    if(winSize!=phaseCumulative.size()){
+        phaseCumulative.resize(winSize);
+        phaseFrame.resize(winSize);
+        magFrame.resize(winSize);
+        previousPhase.resize(winSize);
+        deltaPhi.resize(winSize);
+        trueFreq.resize(winSize);
+    }
 
-    for (int i = 0; i < numberFrames; ++i) {
+    auto currentFrameFFT = std::vector<std::complex<float>>();
+    
+    for (int i = 0; i < outputy.size(); ++i) {
         //cout << "Frame " << i << endl;
 
         //Analysis

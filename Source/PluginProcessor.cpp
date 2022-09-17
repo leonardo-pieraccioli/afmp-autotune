@@ -133,7 +133,8 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-
+    std::cout << "Number of Inputs: " << totalNumInputChannels << std::endl;
+    std::cout << "Number of Outputs: " << totalNumOutputChannels << std::endl;
     /* In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).

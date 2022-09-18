@@ -167,29 +167,33 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         //finding the ratio
         auto ratio = ratio_finder.getRatio(win, getSampleRate());
         std::cout << "Ratio: " << ratio << std::endl;
+        
+        if(ratio != 1) { //skip in case of perfect pitch
+        
+            //splitting the window in frames
+            framer.createFrames(win);
 
-        //splitting the window in frames
-        framer.createFrames(win);
+            //pitch shifting
+            framer.setFrames(pitch_shifter.execute(framer.getFrames(), framer.getWinSize(), framer.getHopsize(), ratio));
+            std::cout << "Pitch shifted" << std::endl;
 
-        //pitch shifting
-        framer.setFrames(pitch_shifter.execute(framer.getFrames(), framer.getWinSize(), framer.getHopsize(), ratio));
-        std::cout << "Pitch shifted" << std::endl;
+            //recomposing the window
+            framer.fusionFrames((int) round(ratio * (float) framer.getHopsize()));
+            std::cout << "Resampled" << std::endl;
 
-        //recomposing the window
-        //ratio = 1;
-        framer.fusionFrames((int) round(ratio * (float) framer.getHopsize()));
-        std::cout << "Resampled" << std::endl;
-
-        //set the window
-        window.set_window_once_elaborate(framer.getVectorOutput()); //set the window
+            //set the window
+            window.set_window_once_elaborate(framer.getVectorOutput()); //set the window
+        
+        }
     }
     
     //saving the buffer from JUCE and sending an output
     float* outBuffer = window.buffer_read_and_write(std::vector<float>(buffer.getReadPointer(0), buffer.getReadPointer(0) + buffer.getNumSamples())).data();
     auto writePointer = buffer.getWritePointer(0);
+    
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
         writePointer[sample] = outBuffer[sample];
-    //copy channel 0 in to channel 1 to obtain stereo audio behavior
+    //copy channel 0 in to channel 1 to obtain correct stereo audio behavior
     buffer.copyFrom(1,0,buffer,0,0,buffer.getNumSamples());
     std::cout << "Buffer done" << std::endl;
 }

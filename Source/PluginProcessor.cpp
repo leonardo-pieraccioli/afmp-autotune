@@ -91,7 +91,7 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     juce::ignoreUnused (sampleRate, samplesPerBlock);
 
     //creating the window as a circular buffer long 20 times the buffer coming from JUCE
-    window = CircularBuffer(samplesPerBlock*20);
+    window = WindowMaker(samplesPerBlock*20);
     std::cout << "Prepare to play" << std::endl;
 }
 
@@ -183,8 +183,8 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 
             //set the window
             window.set_window_once_elaborate(framer.getVectorOutput()); //set the window
-        
         }
+        window.reset_end_i();
     }
     
     //saving the buffer from JUCE and sending an output

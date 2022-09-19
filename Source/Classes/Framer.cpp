@@ -16,6 +16,7 @@ void Framer::setFrames(std::vector<std::vector<float>> framesMatrix){
             Frames[i][j] = framesMatrix[i][j];
         }
     }
+    cout << "\tFrames saved" << endl;
 }
 
 //getters
@@ -34,7 +35,7 @@ int Framer::getHopsize() const {
 
 //frames matrix creation
 void Framer::createFrames(std::vector<float> window){
-    std::cout << "Start create frames" << std::endl;
+    std::cout << "\tStart create frames" << std::endl;
     len = window.size();
     hopsize = floor(len/64);
     winSize = floor(len/16);
@@ -42,9 +43,8 @@ void Framer::createFrames(std::vector<float> window){
     int numberSlices = floor((len-winSize)/hopsize);
     // truncate if needed to get only a integer number of hop
     int trunc = numberSlices*hopsize+winSize;
-    std::cout << "trunc " << trunc << std::endl;
     window.resize(trunc);
-    std::cout << "Window resized" << std::endl;
+    std::cout << "\tWindow resized to " << window.size() << std::endl;
     // frames matrix
     for ( int i = 0; i <= numberSlices; i++) {
         int indexTimeStart = i*hopsize;
@@ -52,17 +52,17 @@ void Framer::createFrames(std::vector<float> window){
         Frames.push_back(std::vector<float>(window.begin()+indexTimeStart, window.begin()+indexTimeEnd));
         //std::cout << "Frame " << i << "created " << std::endl;
     }
-    std::cout << "Matrix created" << std::endl;
+    std::cout << "\tMatrix created" << std::endl;
 }
 
 //window reconstruction
 void Framer::fusionFrames(int hopOut){
-    cout << "Fusion Frames started with hop out: " << hopOut << " with hop: " << hopsize << endl;
+    cout << "\tFusion Frames started with hop out: " << hopOut << " with hop: " << hopsize << endl;
     int numberFrames = Frames.size();
     int timeIndex = 0;
     double ratioSample;
     auto vectorStretch = std::vector<float>(numberFrames*hopOut-hopOut+winSize, 0);
-    cout << "Vector Stretch size: " << vectorStretch.size() << " Window length: " << len << endl;
+    cout << "\tVector Stretch size: " << vectorStretch.size() << " Window length: " << len << endl;
 
     for ( int i = 0; i < numberFrames; i++) {
         for ( int j = 0; j < Frames[i].size(); j++) {
@@ -73,14 +73,14 @@ void Framer::fusionFrames(int hopOut){
     //cout << "Vector stretched ok" << endl;
     
     // interpolation
-    juce::Interpolators::WindowedSinc interpol;
+    juce::Interpolators::Lagrange interpol;
     newLen = vectorStretch.size();
     ratioSample = (double) newLen/ (double) len;
-    cout << "ratio sample is " << ratioSample << endl;
+    cout << "\tRatio for resampling is " << ratioSample << endl;
     vectorOutput.resize(len);
-    interpol.reset();
+
     interpol.process(ratioSample,vectorStretch.data(),vectorOutput.data(),len);
-    cout << "Interp ok" << endl;
+    cout << "\tInterpolation done" << endl;
 
     Frames.clear();
 }

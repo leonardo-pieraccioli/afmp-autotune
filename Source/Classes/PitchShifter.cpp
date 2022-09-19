@@ -10,13 +10,14 @@ PitchShifter::PitchShifter(){
 
 //implementation of functions in PitchShifter.h
 std::vector<std::vector<float>> PitchShifter::execute(std::vector <std::vector<float>> outputy,const unsigned int & winSize, const unsigned int& hop,const float & ratio){
+    cout << "\tPitch Shifter... ";
     float hopOut = round(hop * ratio); //computing the hop scaled by the ratio
     auto wn = std::vector <float>(winSize);
     wn = hann(wn, winSize); //creating the Hanning window of winSize points
-    cout << "Hann done" << endl;
+    //cout << "Hann done" << endl;
 
     auto fft = juce::dsp::FFT (floor(log2(winSize))); //TODO attento all'ordine
-    cout << "FFT created" << endl;
+    //cout << "FFT created" << endl;
 
     //Vectors resizes
     if(winSize!=phaseCumulative.size()){
@@ -74,11 +75,11 @@ std::vector<std::vector<float>> PitchShifter::execute(std::vector <std::vector<f
         }
     }
 
-    //cout << "Ready to return" << endl;
+    cout << "\t...done" << endl;
     return outputy;
 }
 
-//Hann function generator
+//Hanning function generator
 std::vector<float> PitchShifter::hann(std::vector<float> &inputVector, unsigned int n_points){
     for (int i = 0; i < n_points; ++i)
         inputVector[i] = 0.5 * (1 - cos(2 * M_PI*i/n_points));

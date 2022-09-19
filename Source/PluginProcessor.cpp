@@ -186,7 +186,8 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
             //set the window
             window.set_window_once_elaborate(framer.getVectorOutput()); //set the window
             std::cout << "Window Elaborated\n\n" << std::endl;
-        }
+        
+        } else window.set_window_once_elaborate(win);
     }
     
     //saving the buffer from JUCE and sending an output

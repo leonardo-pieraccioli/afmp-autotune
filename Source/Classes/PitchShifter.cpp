@@ -31,6 +31,7 @@ std::vector<std::vector<float>> PitchShifter::execute(std::vector <std::vector<f
 
     auto currentFrameFFT = std::vector<std::complex<float>>();
     fill(phaseCumulative.begin(), phaseCumulative.end(), 0);
+    fill(previousPhase.begin(), previousPhase.end(), 0);
     for (int i = 0; i < outputy.size(); ++i) {
         //cout << "Frame " << i << endl;
 

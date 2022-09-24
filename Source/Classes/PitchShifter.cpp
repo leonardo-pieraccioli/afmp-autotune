@@ -16,7 +16,7 @@ std::vector<std::vector<float>> PitchShifter::execute(std::vector <std::vector<f
     wn = hann(wn, winSize); //creating the Hanning window of winSize points
     //cout << "Hann done" << endl;
 
-    auto fft = juce::dsp::FFT (floor(log2(winSize))); //TODO attento all'ordine
+    auto fft = juce::dsp::FFT (floor(log2(winSize)));
     //cout << "FFT created" << endl;
 
     //Vectors resizes
@@ -53,7 +53,7 @@ std::vector<std::vector<float>> PitchShifter::execute(std::vector <std::vector<f
             phaseFrame[j] = std::arg(currentFrameFFT[j]);
 
         //Processing
-            deltaPhi[j] = (phaseFrame[j] - previousPhase[j]) - (hop * 2 * M_PI * j / winSize); //lines 102 and 106 of Matlab pitchShift.m script
+            deltaPhi[j] = (phaseFrame[j] - previousPhase[j]) - (hop * 2 * M_PI * j / winSize);
             deltaPhi[j] = fmod((deltaPhi[j] + M_PI), (2 * M_PI)) - M_PI; //fmod gives out the floating-point remainder
             previousPhase[j] = phaseFrame[j];
             trueFreq[j] = (2 * M_PI * j / winSize) + (deltaPhi[j]/hop);

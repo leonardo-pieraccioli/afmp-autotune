@@ -63,11 +63,11 @@ int binarySearch(float arr[], int l, int r, float x)
         // If the frequency is present at the middle itself
         if (arr[mid] == x)
             return mid;
- 
+
         // If frequency is smaller than mid, then it can only be present in left subarray
         if (arr[mid] > x)
             return binarySearch(arr, l, mid - 1, x);
- 
+
         // Else the element can only be present in right subarray
         return binarySearch(arr, mid + 1, r, x);
     }
@@ -83,7 +83,6 @@ int binarySearch(float arr[], int l, int r, float x)
 }
 
 float RatioFinder::findNearestNoteFrequency(float noteFrequency){
-    //binarySearch ritorna l'indice del risultato, io voglio tornare la frequenza
     return freqTable[static_cast<unsigned long>(binarySearch(
             freqTable.data(),
             0,
@@ -121,13 +120,11 @@ float RatioFinder::getRatio(std::vector<float> input, double sampleRate){
     input.resize(fft.getSize());
     std::cout << "\tResized at " << input.size() << std::endl;
 
-    // CALCOLARE FFT CON PERFORM E POI CALCOLARE IL MODULO
     auto inputFFT = std::vector<std::complex<float>>(input.size());
     auto outputFFT = std::vector<std::complex<float>>(input.size());
     toComplex(input, inputFFT);
     std::cout << "\tConversion to complex completed\n";
 
-    //Seg fault
     fft.perform(inputFFT.data(), outputFFT.data(), false);
     std::cout << "\tFft size after perform " << fft.getSize() << " \n\tSize after perform " << outputFFT.size() << std::endl;
 
